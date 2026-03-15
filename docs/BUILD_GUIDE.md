@@ -1,7 +1,8 @@
 # FunnelLM Build Guide (Execution Plan)
 
-> **Agent Instruction:** When executing the UI phases below (Batch 5), continually reference the `docs/design_inspiration/messaging_references/` folder to ensure the aesthetic aligns with premium messaging standards (Discord, Google Messages, GroupMe). Do NOT rely on generic UI patterns.
+> **Agent Instruction 1:** When executing the UI phases below (Batch 5), continually reference the `docs/design_inspiration/messaging_references/` folder to ensure the aesthetic aligns with premium messaging standards (Discord, Google Messages, GroupMe). Do NOT rely on generic UI patterns.
 
+> **Agent Instruction 2 (Core Philosophy):** DO NOT include redundant hints, generic onboarding text, or "slop comments" (like "Type a prompt below to get started"). Assume the user knows exactly why they are here. Keep the interface absolutely minimal, functional, and uncluttered.
 ## Batch 1: The Foundation & Auth Handshake
 - **Goal:** Prove the Web App can send its session UID to the Extension Background Script (`chrome.runtime.sendMessage`).
 - Initialize Next.js app with Tailwind and Framer Motion base.

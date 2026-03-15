@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "FunnelLM",
+  "version": "0.1.0",
+  "description": "The consensus engine for LLMs. Orchestrate multiple AI models from a single interface.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["tabs", "storage", "scripting", "activeTab"],
+  "host_permissions": [
+    "https://chat.openai.com/*",
+    "https://chatgpt.com/*",
+    "https://claude.ai/*",
+    "https://gemini.google.com/*",
+    "https://chat.deepseek.com/*",
+    "https://www.perplexity.ai/*",
+    "https://www.meta.ai/*",
+    "https://x.com/i/grok*",
+    "https://grok.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "externally_connectable": {
+    "matches": ["http://localhost:3000/*", "https://*.vercel.app/*"]
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "FunnelLM"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*",
+        "https://chat.deepseek.com/*",
+        "https://www.perplexity.ai/*",
+        "https://www.meta.ai/*",
+        "https://x.com/i/grok*",
+        "https://grok.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
