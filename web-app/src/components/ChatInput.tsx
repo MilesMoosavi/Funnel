@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 
 interface ChatInputProps {
@@ -10,12 +10,20 @@ interface ChatInputProps {
 
 export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   const [message, setMessage] = useState("");
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-focus on mount
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const handleSend = () => {
     const trimmed = message.trim();
     if (!trimmed || disabled) return;
     onSend(trimmed);
     setMessage("");
+    // Refocus after clear
+    setTimeout(() => inputRef.current?.focus(), 0);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -38,15 +46,15 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
       >
         {/* Attach / Plus Icon */}
         <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ background: "rgba(255, 255, 255, 0.06)" }}
+          whileTap={{ background: "rgba(255, 255, 255, 0.1)" }}
           className="flex items-center justify-center shrink-0 cursor-pointer"
           style={{
             width: 32,
             height: 32,
-            borderRadius: "var(--radius-full)",
-            background: "var(--bg-tertiary)",
-            border: "none",
+            borderRadius: "var(--radius-sm)",
+            background: "transparent",
+            border: "1px solid var(--border-subtle)",
             color: "var(--text-secondary)",
           }}
           title="Attach file"
@@ -68,6 +76,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
 
         {/* Text Input */}
         <textarea
+          ref={inputRef}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -87,13 +96,13 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
 
         {/* Mic Icon */}
         <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ background: "rgba(255, 255, 255, 0.06)" }}
+          whileTap={{ background: "rgba(255, 255, 255, 0.1)" }}
           className="flex items-center justify-center shrink-0 cursor-pointer"
           style={{
             width: 32,
             height: 32,
-            borderRadius: "var(--radius-full)",
+            borderRadius: "var(--radius-sm)",
             background: "transparent",
             border: "none",
             color: "var(--text-tertiary)",
@@ -119,22 +128,29 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
 
         {/* Send Button */}
         <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={
+            message.trim() && !disabled
+              ? { opacity: 0.9 }
+              : {}
+          }
+          whileTap={
+            message.trim() && !disabled
+              ? { opacity: 0.8 }
+              : {}
+          }
           onClick={handleSend}
           disabled={!message.trim() || disabled}
           className="flex items-center justify-center shrink-0 cursor-pointer"
           style={{
             width: 32,
             height: 32,
-            borderRadius: "var(--radius-full)",
+            borderRadius: "var(--radius-sm)",
             background:
               message.trim() && !disabled
                 ? "linear-gradient(135deg, var(--accent-funnel), rgba(139, 92, 246, 0.7))"
                 : "var(--bg-tertiary)",
             border: "none",
             color: message.trim() && !disabled ? "white" : "var(--text-tertiary)",
-            transition: "var(--transition-base)",
           }}
           title="Send"
         >

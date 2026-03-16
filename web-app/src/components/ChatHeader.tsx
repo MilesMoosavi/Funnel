@@ -5,17 +5,17 @@ import { useState } from "react";
 import ExtensionStatus, { type ConnectionState } from "./ExtensionStatus";
 
 interface ChatHeaderProps {
-  conversationName: string;
   uid: string;
   isSidebarOpen: boolean;
   onToggleSidebar: () => void;
+  onNewChat: () => void;
 }
 
 export default function ChatHeader({
-  conversationName,
   uid,
   isSidebarOpen,
   onToggleSidebar,
+  onNewChat,
 }: ChatHeaderProps) {
   const [connectionState, setConnectionState] = useState<ConnectionState>("disconnected");
   return (
@@ -40,7 +40,7 @@ export default function ChatHeader({
               whileHover={{ background: "rgba(255, 255, 255, 0.06)" }}
               whileTap={{ background: "rgba(255, 255, 255, 0.1)" }}
               onClick={onToggleSidebar}
-              className="flex items-center justify-center cursor-pointer rounded-md transition-colors duration-200"
+              className="flex items-center justify-center cursor-pointer rounded-md"
               style={{
                 width: 32,
                 height: 32,
@@ -68,7 +68,8 @@ export default function ChatHeader({
             <motion.button
               whileHover={{ background: "rgba(255, 255, 255, 0.06)" }}
               whileTap={{ background: "rgba(255, 255, 255, 0.1)" }}
-              className="flex items-center justify-center cursor-pointer rounded-md transition-colors duration-200"
+              onClick={onNewChat}
+              className="flex items-center justify-center cursor-pointer rounded-md"
               style={{
                 width: 32,
                 height: 32,

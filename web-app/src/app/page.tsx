@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Sidebar from "@/components/Sidebar";
 import ChatHeader from "@/components/ChatHeader";
 import ChatInput from "@/components/ChatInput";
@@ -89,63 +89,65 @@ export default function Home() {
       >
         {/* Header — Hardcoded title as requested to avoid unasked changes */}
         <ChatHeader
-          conversationName="Configure LLMs"
           uid={user.uid}
           isSidebarOpen={isSidebarOpen}
           onToggleSidebar={toggleSidebar}
+          onNewChat={handleNewChat}
         />
 
         {/* Chat Body */}
         <div className="flex-1 min-h-0 flex flex-col">
-          {messages.length === 0 ? (
-            <div className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center">
-              <div className="w-full max-w-3xl flex flex-col items-center gap-6 px-4 py-8 flex-1">
-                {/* State 1: New Chat — Input Centered below NewChatScreen */}
-                <div className="flex-1 flex flex-col items-center justify-center w-full h-full">
-                  <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col items-center gap-12 w-full"
-                  >
-                    <NewChatScreen />
+          <AnimatePresence mode="wait">
+            {messages.length === 0 ? (
+              <div key="new-chat-pane" className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center">
+                <div className="w-full max-w-3xl flex flex-col items-center gap-6 px-4 py-8 flex-1">
+                  {/* State 1: New Chat — Input Centered below NewChatScreen */}
+                  <div className="flex-1 flex flex-col items-center justify-center w-full h-full">
                     <motion.div
-                      layoutId="chat-input-wrapper"
-                      className="w-full max-w-2xl"
-                      transition={{ type: "spring", bounce: 0, duration: 0.6 }}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                      className="flex flex-col items-center gap-12 w-full"
                     >
-                      <ChatInput onSend={handleSendMessage} />
+                      <NewChatScreen />
+                      <motion.div
+                        layoutId="chat-input-wrapper"
+                        className="w-full max-w-2xl"
+                        transition={{ type: "spring", bounce: 0, duration: 0.6 }}
+                      >
+                        <ChatInput onSend={handleSendMessage} />
+                      </motion.div>
                     </motion.div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div key="active-chat-pane" className="flex-1 min-h-0 flex flex-col">
+                {/* State 2: Active Chat — Only this pane scrolls */}
+                <div
+                  ref={chatScrollRef}
+                  className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center"
+                >
+                  <div className="w-full max-w-3xl px-4 py-8">
+                    {messages.map((msg, idx) => (
+                      <ChatBubble key={msg.id} message={msg} index={idx} />
+                    ))}
+                  </div>
+                </div>
+  
+                {/* Bottom Composer stays fixed in layout */}
+                <div className="shrink-0 flex justify-center pt-4 px-4 pb-10 bg-linear-to-t from-background via-background to-transparent z-10">
+                  <motion.div
+                    layoutId="chat-input-wrapper"
+                    className="w-full max-w-2xl"
+                    transition={{ type: "spring", bounce: 0, duration: 0.6 }}
+                  >
+                    <ChatInput onSend={handleSendMessage} />
                   </motion.div>
                 </div>
               </div>
-            </div>
-          ) : (
-            <>
-              {/* State 2: Active Chat — Only this pane scrolls */}
-              <div
-                ref={chatScrollRef}
-                className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center"
-              >
-                <div className="w-full max-w-3xl px-4 py-8">
-                  {messages.map((msg) => (
-                    <ChatBubble key={msg.id} message={msg} />
-                  ))}
-                </div>
-              </div>
-
-              {/* Bottom Composer stays fixed in layout */}
-              <div className="shrink-0 flex justify-center pt-4 px-4 pb-10 bg-linear-to-t from-background via-background to-transparent z-10">
-                <motion.div
-                  layoutId="chat-input-wrapper"
-                  className="w-full max-w-2xl"
-                  transition={{ type: "spring", bounce: 0, duration: 0.6 }}
-                >
-                  <ChatInput onSend={handleSendMessage} />
-                </motion.div>
-              </div>
-            </>
-          )}
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Footer note stays visible in both chat states */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function NewChatScreen() {
   const container = {
@@ -13,6 +13,11 @@ export default function NewChatScreen() {
         ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
       },
     },
+    exit: {
+      opacity: 0,
+      y: -20,
+      transition: { duration: 0.3 }
+    }
   };
 
   const logoVariants = {
@@ -25,6 +30,11 @@ export default function NewChatScreen() {
         ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
       },
     },
+    exit: {
+      opacity: 1, // Keep opacity 1 so it can flight to the bubble
+      scale: 1,
+      transition: { duration: 0.5 }
+    }
   };
 
   const titleVariants = {
@@ -41,7 +51,7 @@ export default function NewChatScreen() {
       x: 0,
       transition: {
         width: {
-          delay: 0.6, // 0.5 (logo duration) + 0.1 (pause)
+          delay: 0.6,
           duration: 0.8,
           ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
         },
@@ -61,58 +71,67 @@ export default function NewChatScreen() {
         },
       },
     },
+    exit: {
+      opacity: 0,
+      x: 20,
+      transition: { duration: 0.3 }
+    }
   };
 
   return (
-    <motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="flex flex-col items-center justify-center w-full px-8"
-    >
-      <motion.div layout className="flex items-center justify-center">
-        {/* Funnel Logo */}
-        <motion.div
-          variants={logoVariants}
-          layout
-          style={{
-            width: 56,
-            height: 56,
-            color: "var(--text-primary)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            position: "relative",
-            top: -7,
-          }}
-        >
-          <svg
-            viewBox="0 0 400 400"
-            width="100%"
-            height="100%"
-            xmlns="http://www.w3.org/2000/svg"
+    <AnimatePresence mode="wait">
+      <motion.div
+        key="new-chat-screen"
+        variants={container}
+        initial="hidden"
+        animate="show"
+        exit="exit"
+        className="flex flex-col items-center justify-center w-full px-8"
+      >
+        <motion.div layout className="flex items-center justify-center">
+          {/* Funnel Logo */}
+          <motion.div
+            variants={logoVariants}
+            layoutId="funnel-logo"
+            style={{
+              width: 56,
+              height: 56,
+              color: "var(--text-primary)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+              top: -7,
+            }}
           >
-            <path
-              fill="#FFFFFF"
-              fillRule="evenodd"
-              d="m 45 31 l 173 304 18 34 19 -34 v -94 l -65 -113 h 109 l 16 -27 h -141 l -25 -43 h 191 l 15 -26 z m 187 281 v -64 l -108 -189 h -38 z"
-            />
-          </svg>
-        </motion.div>
+            <svg
+              viewBox="0 0 400 400"
+              width="100%"
+              height="100%"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill="#FFFFFF"
+                fillRule="evenodd"
+                d="m 45 31 l 173 304 18 34 19 -34 v -94 l -65 -113 h 109 l 16 -27 h -141 l -25 -43 h 191 l 15 -26 z m 187 281 v -64 l -108 -189 h -38 z"
+              />
+            </svg>
+          </motion.div>
 
-        {/* Main Title */}
-        <motion.h1
-          variants={titleVariants}
-          className="text-3xl font-semibold tracking-tight"
-          style={{
-            color: "var(--text-primary)",
-            overflow: "hidden",
-            whiteSpace: "nowrap",
-          }}
-        >
-          unnel
-        </motion.h1>
+          {/* Main Title */}
+          <motion.h1
+            variants={titleVariants}
+            className="text-3xl font-semibold tracking-tight"
+            style={{
+              color: "var(--text-primary)",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+            }}
+          >
+            unnel
+          </motion.h1>
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </AnimatePresence>
   );
 }
