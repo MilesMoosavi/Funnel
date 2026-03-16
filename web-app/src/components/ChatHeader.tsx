@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import ExtensionStatus from "./ExtensionStatus";
+import { useState } from "react";
+import ExtensionStatus, { type ConnectionState } from "./ExtensionStatus";
 
 interface ChatHeaderProps {
   conversationName: string;
@@ -16,6 +17,7 @@ export default function ChatHeader({
   isSidebarOpen,
   onToggleSidebar,
 }: ChatHeaderProps) {
+  const [connectionState, setConnectionState] = useState<ConnectionState>("disconnected");
   return (
     <motion.header
       initial={{ opacity: 0 }}
@@ -85,47 +87,52 @@ export default function ChatHeader({
         )}
       </div>
 
-      {/* Center — Conversation Title */}
+      {/* Center — Connection status / LLM count (replaces dropdown when disconnected) */}
       <div className="flex items-center justify-center flex-1">
-        <motion.button
-          whileHover={{ background: "rgba(255, 255, 255, 0.06)" }}
-          whileTap={{ background: "rgba(255, 255, 255, 0.1)" }}
-          className="flex items-center gap-2 px-4 py-2 rounded-md cursor-pointer transition-colors duration-200"
-          style={{
-            border: "none",
-          }}
-          title="Open group settings"
-        >
-          <span
-            className="text-sm font-semibold"
-            style={{ color: "var(--text-primary)" }}
+        {connectionState !== "connected" ? (
+          <ExtensionStatus uid={uid} minimal={false} onStateChange={setConnectionState} />
+        ) : (
+          <motion.button
+            whileHover={{ background: "rgba(255, 255, 255, 0.06)" }}
+            whileTap={{ background: "rgba(255, 255, 255, 0.1)" }}
+            className="flex items-center gap-2 px-4 py-2 rounded-md cursor-pointer transition-colors duration-200"
+            style={{
+              border: "none",
+            }}
+            title="Configure LLMs"
           >
-            {conversationName}
-          </span>
+            <span
+              className="h-2 w-2 rounded-full"
+              style={{
+                background: "var(--status-connected)",
+              }}
+            />
 
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="var(--text-tertiary)"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
-        </motion.button>
+            <span
+              className="text-sm font-semibold"
+              style={{ color: "var(--text-primary)" }}
+            >
+              0 LLMs active
+            </span>
+
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--text-tertiary)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </motion.button>
+        )}
       </div>
 
-      {/* Right — Window Actions */}
+      {/* Right — Window Actions (Help only) */}
       <div className="flex items-center gap-2 flex-1 justify-end">
-        {/* Connection Pulse */}
-        <div className="mr-1">
-          <ExtensionStatus uid={uid} minimal />
-        </div>
-
-        {/* Help */}
         <motion.button
           whileHover={{ background: "rgba(255, 255, 255, 0.06)" }}
           whileTap={{ background: "rgba(255, 255, 255, 0.1)" }}

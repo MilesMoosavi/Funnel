@@ -1,7 +1,7 @@
 /**
  * Auth Utilities
  *
- * Basic user identity structure for FunnelLM.
+ * Basic user identity structure for Funnel.
  * In Batch 1, we use a simple guest UID system.
  * Future batches will integrate NextAuth with Firebase/Google providers.
  */
@@ -46,7 +46,7 @@ export function getOrCreateUser(): FunnelUser {
     return createGuestUser();
   }
 
-  const stored = localStorage.getItem("funnellm_user");
+  const stored = localStorage.getItem("funnel_user");
   if (stored) {
     try {
       return JSON.parse(stored) as FunnelUser;
@@ -56,6 +56,6 @@ export function getOrCreateUser(): FunnelUser {
   }
 
   const guest = createGuestUser();
-  localStorage.setItem("funnellm_user", JSON.stringify(guest));
+  localStorage.setItem("funnel_user", JSON.stringify(guest));
   return guest;
 }

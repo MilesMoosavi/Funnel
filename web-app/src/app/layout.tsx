@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "FunnelLM",
+  title: "Funnel",
   description:
     "Orchestrate multiple AI models into a single consensus-driven group chat. Parallel prompting, real-time majority vote detection, and unified synthesis.",
   keywords: [

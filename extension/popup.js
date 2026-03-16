@@ -1,5 +1,5 @@
 /**
- * FunnelLM — Popup Script
+ * Funnel — Popup Script
  *
  * Queries the background service worker for current state
  * and updates the popup UI.
@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const tabsList = document.getElementById("tabs-list");
 
   // Load session from storage
-  chrome.storage.local.get("funnellm_session", (data) => {
-    const session = data.funnellm_session;
+  chrome.storage.local.get("funnel_session", (data) => {
+    const session = data.funnel_session;
 
     if (session && session.uid) {
       webappDot.className = "status-dot online";

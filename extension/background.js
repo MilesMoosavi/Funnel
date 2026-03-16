@@ -1,5 +1,5 @@
 /**
- * FunnelLM — Background Service Worker
+ * Funnel — Background Service Worker
  *
  * The "Brain" of the extension. Responsibilities:
  * 1. Receive AUTH_HANDSHAKE from the Web App (via externally_connectable)
@@ -32,8 +32,8 @@ const activeTabs = new Map(); // tabId → { url, model, status, lastSeen }
 
 chrome.runtime.onMessageExternal.addListener(
   (message, sender, sendResponse) => {
-    console.log("[FunnelLM BG] Received external message:", message);
-    console.log("[FunnelLM BG] From sender:", sender);
+    console.log("[Funnel BG] Received external message:", message);
+    console.log("[Funnel BG] From sender:", sender);
 
     switch (message.type) {
       case "AUTH_HANDSHAKE":

@@ -26,12 +26,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.3 }}
-      className="w-full"
-    >
+    <div className="w-full">
       <div
         className="flex items-center gap-3 px-4 py-3 rounded-2xl"
         style={{
@@ -158,6 +153,6 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
           </svg>
         </motion.button>
       </div>
-    </motion.div>
+    </div>
   );
 }

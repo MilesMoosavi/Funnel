@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <!-- Funnel Brand Background -->
+  <rect width="400" height="400" rx="80" fill="#000000" />
+  <!-- White Logo Monogram (Shrunk and centered) -->
+  <g transform="translate(200, 200) scale(0.75) translate(-200, -200)">
+    <path
+      fill="#FFFFFF"
+      fill-rule="evenodd"
+      d="m 45 31 l 173 304 18 34 19 -34 v -94 l -65 -113 h 109 l 16 -27 h -141 l -25 -43 h 191 l 15 -26 z m 187 281 v -64 l -108 -189 h -38 z"
+    />
+  </g>
+</svg>

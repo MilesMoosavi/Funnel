@@ -7,6 +7,7 @@ interface SidebarProps {
   displayName: string | null;
   isOpen: boolean;
   onToggle: () => void;
+  onNewChat?: () => void;
 }
 
 export default function Sidebar({
@@ -14,6 +15,7 @@ export default function Sidebar({
   displayName,
   isOpen,
   onToggle,
+  onNewChat,
 }: SidebarProps) {
   return (
     <motion.aside
@@ -74,6 +76,7 @@ export default function Sidebar({
           color: "var(--text-secondary)",
         }}
         title="New chat"
+        onClick={onNewChat}
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />

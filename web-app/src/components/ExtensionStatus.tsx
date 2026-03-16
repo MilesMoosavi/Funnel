@@ -8,15 +8,16 @@ import {
   type HandshakeResponse,
 } from "@/lib/extension";
 
-type ConnectionState = "checking" | "connected" | "disconnected" | "error";
+export type ConnectionState = "connected" | "disconnected" | "error";
 
 interface ExtensionStatusProps {
   uid: string;
   minimal?: boolean;
+  onStateChange?: (state: ConnectionState) => void;
 }
 
-export default function ExtensionStatus({ uid, minimal }: ExtensionStatusProps) {
-  const [state, setState] = useState<ConnectionState>("checking");
+export default function ExtensionStatus({ uid, minimal, onStateChange }: ExtensionStatusProps) {
+  const [state, setState] = useState<ConnectionState>("disconnected");
   const [response, setResponse] = useState<HandshakeResponse | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [isHovered, setIsHovered] = useState(false);
@@ -25,7 +26,7 @@ export default function ExtensionStatus({ uid, minimal }: ExtensionStatusProps) 
     async function tryHandshake() {
       if (!isExtensionAvailable()) {
         setState("disconnected");
-        setErrorMsg("Extension not detected");
+        setErrorMsg("Click to install");
         return;
       }
 
@@ -39,16 +40,16 @@ export default function ExtensionStatus({ uid, minimal }: ExtensionStatusProps) 
       }
     }
 
-    const timer = setTimeout(tryHandshake, 500);
-    return () => clearTimeout(timer);
+    tryHandshake();
   }, [uid]);
 
+  useEffect(() => {
+    if (onStateChange) {
+      onStateChange(state);
+    }
+  }, [state, onStateChange]);
+
   const statusConfig = {
-    checking: {
-      color: "var(--status-idle)",
-      label: "Checking...",
-      description: "Searching for extension",
-    },
     connected: {
       color: "var(--status-connected)",
       label: "Connected",
@@ -58,7 +59,7 @@ export default function ExtensionStatus({ uid, minimal }: ExtensionStatusProps) 
     },
     disconnected: {
       color: "var(--status-disconnected)",
-      label: "Disconnected",
+      label: "No extension",
       description: errorMsg || "Extension missing",
     },
     error: {
@@ -70,16 +71,26 @@ export default function ExtensionStatus({ uid, minimal }: ExtensionStatusProps) 
 
   const config = statusConfig[state];
 
+  const extensionStoreUrl = "https://chrome.google.com/webstore/search/funnel";
+
+  const handleClick = () => {
+    if (state === "disconnected" || state === "error") {
+      window.open(extensionStoreUrl, "_blank");
+    }
+  };
+
   // If minimal is NOT requested, show the full chip statically
   if (!minimal) {
     return (
       <div
-        className="flex items-center gap-3 px-4 py-2.5 rounded-xl shrink-0"
+        onClick={handleClick}
+        className="flex items-center gap-3 px-4 py-2.5 rounded-xl shrink-0 cursor-pointer"
         style={{
           background: "var(--bg-glass)",
           border: "1px solid var(--border-subtle)",
           backdropFilter: "blur(16px)",
-          width: "100%",
+          width: "auto",
+          maxWidth: 260,
         }}
       >
         <StatusDot state={state} color={config.color} />
@@ -97,49 +108,9 @@ export default function ExtensionStatus({ uid, minimal }: ExtensionStatusProps) 
 
   // Minimal version with persistent dot and liquid-smooth sliding reveal
   return (
-    <motion.div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      layout
-      animate={{
-        width: isHovered ? "auto" : 28,
-        backgroundColor: isHovered ? "var(--bg-glass)" : "transparent",
-        borderColor: isHovered ? "var(--border-subtle)" : "transparent",
-      }}
-      initial={false}
-      transition={{ type: "spring", stiffness: 350, damping: 32 }}
-      className="flex items-center justify-end overflow-hidden rounded-xl border border-transparent h-8 cursor-pointer relative"
-      style={{
-        backdropFilter: isHovered ? "blur(12px)" : "none",
-        paddingRight: isHovered ? 12 : 10,
-        paddingLeft: isHovered ? 12 : 0,
-      }}
-    >
-      {/* Content area: Unrolls to the left of the dot */}
-      <AnimatePresence initial={false}>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0, x: 20, width: 0 }}
-            animate={{ opacity: 1, x: 0, width: "auto" }}
-            exit={{ opacity: 0, x: 10, width: 0 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="flex flex-col pr-3 whitespace-nowrap overflow-hidden"
-          >
-            <span className="text-[10px] font-bold leading-tight" style={{ color: config.color }}>
-              {config.label}
-            </span>
-            <span className="text-[9px] leading-tight" style={{ color: "var(--text-tertiary)" }}>
-              {config.description}
-            </span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Connection Indicator (Persistent Dot) */}
-      <motion.div layout className="shrink-0 flex items-center justify-center" style={{ width: 12 }}>
-        <StatusDot state={state} color={config.color} />
-      </motion.div>
-    </motion.div>
+    <div className="flex items-center justify-center" style={{ width: 28, height: 28 }}>
+      <StatusDot state={state} color={config.color} />
+    </div>
   );
 }
 

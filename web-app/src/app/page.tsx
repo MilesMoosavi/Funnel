@@ -1,16 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Sidebar from "@/components/Sidebar";
 import ChatHeader from "@/components/ChatHeader";
 import ChatInput from "@/components/ChatInput";
-import WelcomeScreen from "@/components/WelcomeScreen";
+import NewChatScreen from "@/components/NewChatScreen";
+import ChatBubble, { type ChatMessage } from "@/components/ChatBubble";
 import { getOrCreateUser, type FunnelUser } from "@/lib/auth";
 
 export default function Home() {
   const [user, setUser] = useState<FunnelUser | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -21,7 +24,42 @@ export default function Home() {
     return () => clearTimeout(timeoutId);
   }, []);
 
+  useEffect(() => {
+    if (!chatScrollRef.current || messages.length === 0) return;
+
+    chatScrollRef.current.scrollTo({
+      top: chatScrollRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages.length]);
+
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  const handleNewChat = () => setMessages([]);
+
+  const handleSendMessage = (content: string) => {
+    const userMsgId = crypto.randomUUID();
+    const newUserMessage: ChatMessage = {
+      id: userMsgId,
+      sender: "user",
+      content,
+      timestamp: Date.now(),
+    };
+    
+    const funnelMsgId = crypto.randomUUID();
+    const loadingMessage: ChatMessage = {
+      id: funnelMsgId,
+      sender: "funnel",
+      content: "",
+      timestamp: Date.now(),
+      isLoading: true,
+    };
+
+    setMessages((prev) => [...prev, newUserMessage, loadingMessage]);
+    
+    // Log for Batch 1 testing
+    console.log("[Funnel] Prompt submitted:", content);
+  };
 
   // Prevent flash before user is loaded
   if (!user) {
@@ -41,6 +79,7 @@ export default function Home() {
         displayName={user.displayName}
         isOpen={isSidebarOpen}
         onToggle={toggleSidebar}
+        onNewChat={handleNewChat}
       />
 
       {/* Main Chat Area */}
@@ -48,7 +87,7 @@ export default function Home() {
         className="flex flex-col flex-1 min-w-0 h-full relative"
         onClick={() => isSidebarOpen && setIsSidebarOpen(false)}
       >
-        {/* Header */}
+        {/* Header — Hardcoded title as requested to avoid unasked changes */}
         <ChatHeader
           conversationName="Configure LLMs"
           uid={user.uid}
@@ -56,52 +95,78 @@ export default function Home() {
           onToggleSidebar={toggleSidebar}
         />
 
-        {/* Chat Body — Empty State */}
-        <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center">
-          <div className="w-full max-w-3xl flex flex-col items-center gap-6 px-4 pb-20">
-            <WelcomeScreen />
+        {/* Chat Body */}
+        <div className="flex-1 min-h-0 flex flex-col">
+          {messages.length === 0 ? (
+            <div className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center">
+              <div className="w-full max-w-3xl flex flex-col items-center gap-6 px-4 py-8 flex-1">
+                {/* State 1: New Chat — Input Centered below NewChatScreen */}
+                <div className="flex-1 flex flex-col items-center justify-center w-full h-full">
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col items-center gap-12 w-full"
+                  >
+                    <NewChatScreen />
+                    <motion.div
+                      layoutId="chat-input-wrapper"
+                      className="w-full max-w-2xl"
+                      transition={{ type: "spring", bounce: 0, duration: 0.6 }}
+                    >
+                      <ChatInput onSend={handleSendMessage} />
+                    </motion.div>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* State 2: Active Chat — Only this pane scrolls */}
+              <div
+                ref={chatScrollRef}
+                className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center"
+              >
+                <div className="w-full max-w-3xl px-4 py-8">
+                  {messages.map((msg) => (
+                    <ChatBubble key={msg.id} message={msg} />
+                  ))}
+                </div>
+              </div>
 
-            {/* Input Bar */}
-            <ChatInput
-              onSend={(msg) => {
-                // In Batch 1, just log it. Batch 2-3 will wire this to the extension.
-                console.log("[FunnelLM] Prompt submitted:", msg);
-                console.log("[FunnelLM] User UID:", user.uid);
-              }}
-            />
-          </div>
+              {/* Bottom Composer stays fixed in layout */}
+              <div className="shrink-0 flex justify-center pt-4 px-4 pb-10 bg-linear-to-t from-background via-background to-transparent z-10">
+                <motion.div
+                  layoutId="chat-input-wrapper"
+                  className="w-full max-w-2xl"
+                  transition={{ type: "spring", bounce: 0, duration: 0.6 }}
+                >
+                  <ChatInput onSend={handleSendMessage} />
+                </motion.div>
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Footer */}
+        {/* Footer note stays visible in both chat states */}
         <motion.footer
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 1.2, ease: "easeOut" }}
-          className="py-2 flex justify-center"
+          className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20"
         >
-          <a
-            href="https://milesmoosavi.me"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 opacity-40 hover:opacity-100 transition-opacity duration-200 no-underline"
-            style={{ color: "var(--text-tertiary)" }}
+          <div
+            className="flex items-center gap-1.5 text-[10px] tracking-tight px-2 py-1 rounded-full whitespace-nowrap max-w-[92vw] overflow-hidden"
+            style={{ color: "var(--text-tertiary)", background: "rgba(15, 15, 15, 0.55)" }}
           >
-            <span className="text-[10px] tracking-tight">A project by Miles Moosavi</span>
-            <svg
-              width="8"
-              height="8"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-              <polyline points="15 3 21 3 21 9" />
-              <line x1="10" y1="14" x2="21" y2="3" />
-            </svg>
-          </a>
+            <span className="truncate">AI responses can be inaccurate</span>
+            <span className="hidden sm:inline" aria-hidden="true">
+              &middot;
+            </span>
+            <span className="hidden sm:inline truncate">
+              Created by Miles Moosavi, 2026
+            </span>
+          </div>
         </motion.footer>
       </main>
     </div>

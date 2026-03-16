@@ -1,7 +1,7 @@
 /**
  * Extension Communication Layer
  *
- * Handles all communication between the FunnelLM Web App and
+ * Handles all communication between the Funnel Web App and
  * the Chrome Extension via chrome.runtime.sendMessage.
  *
  * The Extension ID must match the unpacked extension loaded in Chrome.
@@ -33,7 +33,7 @@ export function isExtensionAvailable(): boolean {
 }
 
 /**
- * Send a message to the FunnelLM Chrome Extension background script.
+ * Send a message to the Funnel Chrome Extension background script.
  * Uses chrome.runtime.sendMessage with the externally_connectable pattern.
  */
 export async function sendToExtension<T = HandshakeResponse>(
