@@ -108,7 +108,7 @@ export default function ExtensionStatus({ uid, minimal, onStateChange }: Extensi
 
   // Minimal version with persistent dot and liquid-smooth sliding reveal
   return (
-    <div className="flex items-center justify-center" style={{ width: 28, height: 28 }}>
+    <div className="flex items-center justify-center" style={{ width: "1.75rem", height: "1.75rem" }}>
       <StatusDot state={state} color={config.color} />
     </div>
   );
@@ -126,15 +126,15 @@ function StatusDot({ state, color }: { state: ConnectionState; color: string }) 
           exit={{ opacity: 0 }}
           transition={{ type: "spring", stiffness: 500, damping: 30 }}
           style={{
-            width: 8,
-            height: 8,
+            width: "0.5rem",
+            height: "0.5rem",
             borderRadius: "50%",
             backgroundColor: color,
           }}
           className="absolute"
         />
       </AnimatePresence>
-      <div style={{ width: 8, height: 8 }} /> {/* Spacer for absolute dot */}
+      <div style={{ width: "0.5rem", height: "0.5rem" }} /> {/* Spacer for absolute dot */}
       
       {state === "connected" && (
         <motion.div
@@ -145,8 +145,8 @@ function StatusDot({ state, color }: { state: ConnectionState; color: string }) 
           transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
           style={{
             position: "absolute",
-            width: 8,
-            height: 8,
+            width: "0.5rem",
+            height: "0.5rem",
             borderRadius: "50%",
             backgroundColor: color,
           }}

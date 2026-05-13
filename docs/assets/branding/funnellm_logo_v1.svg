@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <!-- 
+    SVG PATH BREAKDOWN (Restored Proportions):
+    - Left Body/Edge: m 45 31 l 173 304
+    - Pointy Bottom Tip: 18 34 19 -34
+    - Main Stem (Right Side): v -94
+    - Middle Tooth: l -65 -113 h 109 l 16 -27 H 184
+    - Top Tooth: l -25 -43 h 191 l 15 -26
+    - Inner Hole (Negative Space): m 187 281 v -64 l -108 -189 h -38 z
+  -->
+  <path
+    id="outer_F"
+    fill-rule="evenodd"
+    d="
+      m 45 31 
+      l 173 304 18 34 19 -34 
+      v -94 
+      l -65 -113 h 109 l 16 -27 
+      h -141 
+      l -25 -43 h 191 l 15 -26 
+      z 
+      m 187 281 
+      v -64 l -108 -189 h -38 
+      z
+    "
+    style="fill:#fff"
+  />
+</svg>

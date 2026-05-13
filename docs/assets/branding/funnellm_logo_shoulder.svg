@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <path
+    id="outer_F"
+    fill-rule="evenodd"
+    d="
+      m 45 31 
+      l 156 274 v 50
+      l 35 34 19 -34 
+      v -114 
+      l -65 -113 h 109 l 16 -27 
+      h -141 
+      l -25 -43 h 191 l 15 -26 
+      z 
+      m 192 308 
+      v -91 l -113 -189 h -38 
+      l 133 228 v 52 l 12 12 6 -12
+      z
+    "
+    style="fill:#000"
+  />
+</svg>

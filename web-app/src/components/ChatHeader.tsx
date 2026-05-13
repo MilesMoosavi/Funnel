@@ -42,8 +42,8 @@ export default function ChatHeader({
               onClick={onToggleSidebar}
               className="flex items-center justify-center cursor-pointer rounded-md"
               style={{
-                width: 32,
-                height: 32,
+                width: "2rem",
+                height: "2rem",
                 background: "transparent",
                 border: "none",
                 color: "var(--text-secondary)",
@@ -51,8 +51,8 @@ export default function ChatHeader({
               title="Open Sidebar"
             >
               <svg
-                width="20"
-                height="20"
+                width="25"
+                height="25"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -71,15 +71,15 @@ export default function ChatHeader({
               onClick={onNewChat}
               className="flex items-center justify-center cursor-pointer rounded-md"
               style={{
-                width: 32,
-                height: 32,
+                width: "2rem",
+                height: "2rem",
                 background: "transparent",
                 border: "none",
                 color: "var(--text-secondary)",
               }}
               title="New Chat"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
               </svg>
@@ -117,8 +117,8 @@ export default function ChatHeader({
             </span>
 
             <svg
-              width="12"
-              height="12"
+              width="15"
+              height="15"
               viewBox="0 0 24 24"
               fill="none"
               stroke="var(--text-tertiary)"
@@ -139,8 +139,8 @@ export default function ChatHeader({
           whileTap={{ background: "rgba(255, 255, 255, 0.1)" }}
           className="flex items-center justify-center cursor-pointer transition-colors duration-200"
           style={{
-            width: 32,
-            height: 32,
+            width: "2rem",
+            height: "2rem",
             borderRadius: "var(--radius-sm)",
             border: "none",
             color: "var(--text-tertiary)",
@@ -148,8 +148,8 @@ export default function ChatHeader({
           title="Help"
         >
           <svg
-            width="16"
-            height="16"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"

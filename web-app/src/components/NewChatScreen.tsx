@@ -1,6 +1,9 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { Logo } from "./ui/Logo";
+
+const DEBUG_DURATION_MULTIPLIER = 2;
 
 export default function NewChatScreen() {
   const container = {
@@ -14,9 +17,9 @@ export default function NewChatScreen() {
       },
     },
     exit: {
-      opacity: 0,
-      y: -20,
-      transition: { duration: 0.3 }
+      opacity: 1, // STRICT COMPLIANCE: Keep fully opaque for flight
+      y: 0,
+      transition: { duration: 0.3 } // RESTORED: Give the child logo time to fly out before destroying the container
     }
   };
 
@@ -31,9 +34,10 @@ export default function NewChatScreen() {
       },
     },
     exit: {
-      opacity: 1, // Keep opacity 1 so it can flight to the bubble
+      // Hide the source instantly to prevent the ghosting effect
+      opacity: 1, 
       scale: 1,
-      transition: { duration: 0.5 }
+      transition: { duration: 0 }
     }
   };
 
@@ -79,59 +83,50 @@ export default function NewChatScreen() {
   };
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key="new-chat-screen"
-        variants={container}
-        initial="hidden"
-        animate="show"
-        exit="exit"
-        className="flex flex-col items-center justify-center w-full px-8"
-      >
-        <motion.div layout className="flex items-center justify-center">
-          {/* Funnel Logo */}
-          <motion.div
-            variants={logoVariants}
-            layoutId="funnel-logo"
-            style={{
-              width: 56,
-              height: 56,
-              color: "var(--text-primary)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "relative",
-              top: -7,
-            }}
-          >
-            <svg
-              viewBox="0 0 400 400"
-              width="100%"
-              height="100%"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill="#FFFFFF"
-                fillRule="evenodd"
-                d="m 45 31 l 173 304 18 34 19 -34 v -94 l -65 -113 h 109 l 16 -27 h -141 l -25 -43 h 191 l 15 -26 z m 187 281 v -64 l -108 -189 h -38 z"
-              />
-            </svg>
-          </motion.div>
-
-          {/* Main Title */}
-          <motion.h1
-            variants={titleVariants}
-            className="text-3xl font-semibold tracking-tight"
-            style={{
-              color: "var(--text-primary)",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-            }}
-          >
-            unnel
-          </motion.h1>
+    <motion.div
+      key="new-chat-screen"
+      variants={container}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+      className="flex flex-col items-center justify-center w-full px-8"
+    >
+      <motion.div layout className="flex items-center justify-center">
+        {/* Funnel Logo */}
+        <motion.div
+          variants={logoVariants}
+          layoutId="funnel-logo"
+          transition={{
+            duration: 0.5 * DEBUG_DURATION_MULTIPLIER,
+            ease: [0.16, 1, 0.3, 1]
+          }}
+          style={{
+            width: "3.5rem",
+            height: "3.5rem",
+            color: "var(--text-primary)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
+            opacity: 1, // Force opacity
+          }}
+        >
+          <Logo color="#FFFFFF" />
         </motion.div>
+
+        {/* Main Title */}
+        <motion.h1
+          variants={titleVariants}
+          className="text-3xl font-semibold tracking-tight"
+          style={{
+            color: "var(--text-primary)",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+          }}
+        >
+          unnel
+        </motion.h1>
       </motion.div>
-    </AnimatePresence>
+    </motion.div>
   );
 }

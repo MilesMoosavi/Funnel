@@ -1,4 +1,3 @@
-# Ignore temp files
 .gemini/
 node_modules/
 .next/
@@ -7,4 +6,9 @@ build/
 .env*
 .cursor/
 .agent/
-docs/
+# Allow documentation and assets
+!docs/
+
+# Ignore Claude config
+CLAUDE.md
+.claude/
